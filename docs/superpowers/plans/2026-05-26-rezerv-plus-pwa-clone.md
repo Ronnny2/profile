@@ -70,28 +70,33 @@ Open in Preview, crop tightly to just the black-and-white QR matrix (do NOT incl
 
 Target: roughly 600×600 pixels, PNG.
 
-- [ ] **Step 4: Create the trident SVG**
+- [ ] **Step 4: Download the official trident SVG from Wikimedia Commons**
 
-Create file `assets/trident.svg` with this content. It draws the Ukrainian coat of arms (trident) inside a rounded shield, in the cream color used on the splash screen.
+Don't hand-roll the trident — the real coat of arms has a distinctive shape that's hard to approximate. Download the canonical SVG and re-color it to cream.
+
+```bash
+curl -L 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Lesser_Coat_of_Arms_of_Ukraine.svg' -o assets/trident-original.svg
+```
+
+The downloaded SVG is gold-on-blue with a shield outline. Two options:
+
+**Option A (simpler, looks closer to screenshot):** Open the SVG in a text editor, find all `fill="#..."` attributes and stroke colors. Replace the gold (`#FFD500` or similar) with `#e3dfc7`. Replace any blue background with `none` or remove the background rect entirely. Save as `assets/trident.svg`.
+
+**Option B (cleaner):** Create `assets/trident.svg` with a `<g>` wrapper that forces all children to inherit `fill="#e3dfc7"`:
 
 ```xml
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none">
-  <!-- Shield -->
-  <path d="M32 4 L60 12 V36 C60 56 47 72 32 78 C17 72 4 56 4 36 V12 Z"
-        stroke="#e3dfc7" stroke-width="3" fill="none" stroke-linejoin="round"/>
-  <!-- Trident (simplified, three prongs with center stem and curved arms) -->
-  <g fill="#e3dfc7">
-    <rect x="30" y="20" width="4" height="46"/>
-    <rect x="18" y="20" width="4" height="30"/>
-    <rect x="42" y="20" width="4" height="30"/>
-    <path d="M14 36 Q14 50 22 50 L22 56 Q10 56 10 36 Z"/>
-    <path d="M50 36 Q50 50 42 50 L42 56 Q54 56 54 36 Z"/>
-    <rect x="26" y="60" width="12" height="4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" style="color:#e3dfc7">
+  <g fill="currentColor" stroke="currentColor">
+    <!-- paste the trident path elements from trident-original.svg here, stripped of their fill attributes -->
   </g>
 </svg>
 ```
 
-This is a stylized approximation; if it looks wrong next to the screenshot, refine the path data later. (The real Ukrainian coat of arms has a specific shape — feel free to swap in a more accurate SVG from a public source like the Wikipedia SVG, but keep it monochrome `#e3dfc7`.)
+Either path works — A is faster. Once `assets/trident.svg` exists, delete the temp:
+
+```bash
+rm assets/trident-original.svg
+```
 
 - [ ] **Step 5: Verify assets exist and are reasonable**
 
@@ -579,13 +584,17 @@ Actually, simpler — replace the old `.screen` block entirely with:
 }
 ```
 
-- [ ] **Step 3: Verify splash flow**
+- [ ] **Step 3: Verify splash flow + splash still renders correctly**
 
-Hard-reload (Cmd+Shift+R). Should see: splash for ~1 second, then fade to password screen. Type `1 1 1 1` — dots fill one by one, then attempts to switch to `screen-home`. Since that screen doesn't exist yet, you'll see nothing (blank cream) — that's fine, will be fixed in Task 5.
+The `.screen` rewrite changed both display and transition behavior — re-verify the splash from Task 2 hasn't regressed.
 
-Type `1 2 3 4` — dots fill, then indicators shake briefly, then clear.
+Clear session storage first (DevTools → Application → Session Storage → right-click → Clear). Hard-reload (Cmd+Shift+R). Should see:
 
-Open DevTools → Application → Session Storage — after a correct PIN, key `unlocked = "1"` should exist.
+1. Splash with trident + ministry text for ~1 second (compare to Image 2 — should still look centered and dark, same as Task 2 verification)
+2. Fade to password screen (300 ms crossfade)
+3. Type `1 1 1 1` — dots fill one by one, then attempts to switch to `screen-home`. Since that screen doesn't exist yet, you'll see nothing (blank cream) — that's fine, will be fixed in Task 5.
+4. Reload, type `1 2 3 4` — dots fill, then indicators shake briefly, then clear.
+5. DevTools → Application → Session Storage — after correct PIN, key `unlocked = "1"` should exist.
 
 - [ ] **Step 4: Commit**
 
@@ -683,7 +692,7 @@ Append to `style.css`:
 .screen--home {
   background: var(--bg-cream);
   padding-top: calc(20px + var(--safe-top));
-  padding-bottom: calc(80px + var(--safe-bottom));
+  /* no bottom padding here — .tab-content handles its own bottom space */
 }
 
 .tab-content {
@@ -691,7 +700,10 @@ Append to `style.css`:
   flex: 1;
   flex-direction: column;
   padding: 0 20px;
+  /* Reserve space for bottom-nav so scrolled content doesn't slip under it */
+  padding-bottom: calc(80px + var(--safe-bottom) + 16px);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .tab-content.is-active { display: flex; }
 
@@ -739,6 +751,10 @@ Append to `style.css`:
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
+  /* iOS Safari: force a compositor layer per face. Without this,
+     overflow:hidden + backface-visibility:hidden flickers on flip. */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .card-face--front {
@@ -974,7 +990,9 @@ Append to `style.css`:
 ```css
 .card-face--back {
   background: var(--card-white);
-  transform: rotateY(180deg);
+  /* Combine rotation with the iOS layer-forcing translate from .card-face */
+  -webkit-transform: rotateY(180deg) translateZ(0);
+  transform: rotateY(180deg) translateZ(0);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -992,6 +1010,9 @@ Append to `style.css`:
   max-width: 280px;
   height: auto;
   display: block;
+  /* Keep QR sharp on retina — pixelated edges scan more reliably */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .card.is-flipped {
@@ -1105,6 +1126,8 @@ Append:
   transform: translateY(100%);
   transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
   z-index: 11;
+  /* Prevent iOS pull-to-refresh when interacting with the sheet */
+  overscroll-behavior: contain;
 }
 .sheet.is-open { transform: translateY(0); }
 .sheet[hidden] { display: none; }
@@ -1141,10 +1164,15 @@ Append:
 After `bindHomeScreen`, add:
 
 ```js
+let sheetHideTimer = null;
+
 function openSheet() {
   state.sheetOpen = true;
   const sheet = document.getElementById("sheet");
   const backdrop = document.getElementById("sheet-backdrop");
+  // Cancel a pending hide from a previous close — prevents the race
+  // where rapid close→open hides the now-open sheet 300 ms later.
+  if (sheetHideTimer) { clearTimeout(sheetHideTimer); sheetHideTimer = null; }
   sheet.hidden = false;
   backdrop.hidden = false;
   // Force reflow so the transition fires
@@ -1159,10 +1187,15 @@ function closeSheet() {
   const backdrop = document.getElementById("sheet-backdrop");
   sheet.classList.remove("is-open");
   backdrop.classList.remove("is-open");
-  setTimeout(() => {
-    sheet.hidden = true;
-    backdrop.hidden = true;
-    sheet.style.transform = "";
+  if (sheetHideTimer) clearTimeout(sheetHideTimer);
+  sheetHideTimer = setTimeout(() => {
+    // Guard against re-opening during the transition: only hide if still closed.
+    if (!state.sheetOpen) {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      sheet.style.transform = "";
+    }
+    sheetHideTimer = null;
   }, 300);
 }
 
@@ -1597,47 +1630,80 @@ Add web app manifest, generate icons from trident SVG, hook everything into `<he
 }
 ```
 
-- [ ] **Step 2: Generate a 512×512 PNG icon from the trident**
+- [ ] **Step 2: Generate icons via a one-off browser helper**
 
-The simplest way without installing tools: open `assets/trident.svg` in a browser, screenshot it, crop to a square. OR use macOS Preview's export-with-size, OR use `rsvg-convert` if installed (`brew install librsvg`).
+Use a tiny throwaway HTML page that renders the trident onto a dark canvas and offers each size as a download. Deterministic — no manual cropping, no extra tools.
 
-Cleanest macOS-native script (uses `qlmanage` then `sips`):
-
-```bash
-# Render SVG to a temp PNG via QuickLook, then resize.
-# If qlmanage doesn't render trident.svg cleanly, fall back to manual screenshot.
-mkdir -p /tmp/icon-render
-qlmanage -t -s 1024 -o /tmp/icon-render assets/trident.svg
-mv /tmp/icon-render/trident.svg.png /tmp/icon-render/trident-1024.png
-```
-
-If `qlmanage` doesn't work for SVG (it often doesn't), use this fallback: open `assets/trident.svg` in Safari, take a full screenshot (Cmd+Shift+4 then Space then click the browser viewport), open the screenshot in Preview, Tools → Adjust Size → 1024 px square (constrain), then crop/pad to square if needed. Save as `/tmp/icon-render/trident-1024.png`.
-
-Then composite onto dark background and resize:
+Create `tools/generate-icons.html` (this file is a build helper, not part of the deployed app):
 
 ```bash
-# Create a 512×512 dark canvas with the trident centered.
-# Easiest: open trident-1024.png in Preview, paste onto a dark canvas via
-# Tools → Show Markup Toolbar → Adjust Color (fill background).
-# OR: skip Preview entirely and produce the final icons by hand in any image editor.
-
-# Once you have a 1024×1024 dark-background icon at /tmp/icon-render/icon-1024.png:
-sips -z 192 192 /tmp/icon-render/icon-1024.png --out assets/icon-192.png
-sips -z 512 512 /tmp/icon-render/icon-1024.png --out assets/icon-512.png
-sips -z 512 512 /tmp/icon-render/icon-1024.png --out assets/icon-512-maskable.png
-sips -z 180 180 /tmp/icon-render/icon-1024.png --out assets/apple-touch-icon.png
+mkdir -p tools
 ```
 
-For `favicon.ico` (optional, just keep it minimal):
+```html
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Icon generator</title></head>
+<body style="font-family:sans-serif;padding:20px">
+  <h2>Резерв+ icon generator</h2>
+  <p>Click each button to download the icon at the right size.</p>
+  <div id="buttons"></div>
+  <canvas id="cv" width="1024" height="1024" style="border:1px solid #ccc;max-width:300px;display:block;margin-top:16px"></canvas>
+  <script>
+    const SIZES = [
+      { name: 'icon-192.png',         size: 192, padding: 0.18 },
+      { name: 'icon-512.png',         size: 512, padding: 0.18 },
+      { name: 'icon-512-maskable.png', size: 512, padding: 0.30 }, // bigger safe area
+      { name: 'apple-touch-icon.png', size: 180, padding: 0.16 }
+    ];
+    const trident = new Image();
+    trident.src = '../assets/trident.svg';
+    trident.onload = () => {
+      // Draw preview at 1024
+      drawIcon(document.getElementById('cv'), 1024, 0.18);
+      // Build download buttons
+      const wrap = document.getElementById('buttons');
+      SIZES.forEach(spec => {
+        const btn = document.createElement('button');
+        btn.textContent = 'Download ' + spec.name;
+        btn.style.margin = '4px';
+        btn.onclick = () => download(spec);
+        wrap.appendChild(btn);
+      });
+    };
+    function drawIcon(canvas, size, padding) {
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#1f1c17';
+      ctx.fillRect(0, 0, size, size);
+      const inner = size * (1 - padding * 2);
+      const offset = size * padding;
+      ctx.drawImage(trident, offset, offset, inner, inner);
+    }
+    function download(spec) {
+      const c = document.createElement('canvas');
+      drawIcon(c, spec.size, spec.padding);
+      const a = document.createElement('a');
+      a.download = spec.name;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+  </script>
+</body></html>
+```
+
+Run the dev server, open `http://localhost:8000/tools/generate-icons.html`, click each of the 4 download buttons. Move the 4 PNGs from `~/Downloads/` to `assets/`:
 
 ```bash
-sips -z 32 32 /tmp/icon-render/icon-1024.png --out assets/favicon-32.png
-# A 32x32 PNG renamed to .ico works in modern browsers:
-cp assets/favicon-32.png assets/favicon.ico
-rm assets/favicon-32.png
+mv ~/Downloads/icon-192.png ~/Downloads/icon-512.png ~/Downloads/icon-512-maskable.png ~/Downloads/apple-touch-icon.png assets/
 ```
 
-If creating these icons manually feels too fiddly, an acceptable shortcut for v1: skip the maskable icon, and use the same trident-on-dark PNG for all 4 sizes. They won't be perfectly tuned but will work.
+For the favicon, reuse the 192 as a fallback (modern browsers accept PNG as `.ico`):
+
+```bash
+cp assets/icon-192.png assets/favicon.ico
+```
+
+Note: `tools/generate-icons.html` is committed too so the icons can be regenerated later if the trident SVG changes.
 
 - [ ] **Step 3: Add manifest & icon links to `index.html` `<head>`**
 
@@ -1658,8 +1724,8 @@ Chrome should show an install banner on desktop, or "Install Резерв+" in t
 - [ ] **Step 5: Commit**
 
 ```bash
-git add manifest.json index.html assets/icon-*.png assets/apple-touch-icon.png assets/favicon.ico
-git commit -m "Add PWA manifest, icons, and iOS meta tags"
+git add manifest.json index.html tools/ assets/icon-*.png assets/apple-touch-icon.png assets/favicon.ico
+git commit -m "Add PWA manifest, icons, generator helper, and iOS meta tags"
 ```
 
 ---
@@ -1708,6 +1774,8 @@ self.addEventListener('fetch', e => {
   );
 });
 ```
+
+> ⚠️ **Deploy gotcha:** because this is cache-first, an installed PWA will *never* pick up new code from GitHub Pages until the `CACHE` constant is bumped. **Every deploy must bump `CACHE`** (`'rezerv-plus-v2'`, `'-v3'`, …) — the new SW installs, `activate` clears old caches, clients reload from the new bundle. If you forget, the user keeps seeing the old version forever.
 
 - [ ] **Step 2: Register the SW in `app.js`**
 
