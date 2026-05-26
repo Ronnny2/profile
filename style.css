@@ -443,3 +443,64 @@ html, body {
   color: var(--text-secondary);
   font-weight: 300;
 }
+
+.tab-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.tab-header-row .tab-title { margin: 8px 0 16px; }
+
+.help-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--divider);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-top: 14px;
+}
+
+.paragraph {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.vacancy-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 16px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+.checkbox-box {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--text-primary);
+  border-radius: 4px;
+}
+
+.primary-button {
+  width: 100%;
+  height: 56px;
+  background: var(--accent-orange);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 28px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+}
