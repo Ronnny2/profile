@@ -1,4 +1,4 @@
-const CACHE = 'rezerv-plus-v2';
+const CACHE = 'rezerv-plus-v3';
 const ASSETS = [
   './',
   'index.html',

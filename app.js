@@ -184,6 +184,76 @@ function bindSheet() {
     startY = null;
     currentDelta = 0;
   });
+
+  // Wire sheet items by data-action
+  document.querySelectorAll(".sheet-item[data-action]").forEach(item => {
+    item.addEventListener("click", () => {
+      const action = item.dataset.action;
+      if (action === "view-document") {
+        closeSheet();
+        // Small delay so close animation can begin
+        setTimeout(openDocModal, 80);
+      }
+    });
+  });
+}
+
+let docModalHideTimer = null;
+
+function openDocModal() {
+  const modal = document.getElementById("doc-modal");
+  const backdrop = document.getElementById("doc-modal-backdrop");
+  if (docModalHideTimer) { clearTimeout(docModalHideTimer); docModalHideTimer = null; }
+  modal.hidden = false;
+  backdrop.hidden = false;
+  void modal.offsetWidth;
+  modal.classList.add("is-open");
+  backdrop.classList.add("is-open");
+}
+
+function closeDocModal() {
+  const modal = document.getElementById("doc-modal");
+  const backdrop = document.getElementById("doc-modal-backdrop");
+  modal.classList.remove("is-open");
+  backdrop.classList.remove("is-open");
+  if (docModalHideTimer) clearTimeout(docModalHideTimer);
+  docModalHideTimer = setTimeout(() => {
+    modal.hidden = true;
+    backdrop.hidden = true;
+    modal.style.transform = "";
+    docModalHideTimer = null;
+  }, 320);
+}
+
+function bindDocModal() {
+  document.getElementById("doc-modal-backdrop").addEventListener("click", closeDocModal);
+
+  const handle = document.querySelector(".doc-modal-handle-area");
+  const modal = document.getElementById("doc-modal");
+  let startY = null;
+  let currentDelta = 0;
+
+  handle.addEventListener("touchstart", (e) => {
+    startY = e.touches[0].clientY;
+    modal.style.transition = "none";
+  }, { passive: true });
+
+  handle.addEventListener("touchmove", (e) => {
+    if (startY === null) return;
+    currentDelta = Math.max(0, e.touches[0].clientY - startY);
+    modal.style.transform = `translateY(${currentDelta}px)`;
+  }, { passive: true });
+
+  handle.addEventListener("touchend", () => {
+    modal.style.transition = "";
+    if (currentDelta > 100) {
+      closeDocModal();
+    } else {
+      modal.style.transform = "";
+    }
+    startY = null;
+    currentDelta = 0;
+  });
 }
 
 function startSplashFlow() {
@@ -195,6 +265,7 @@ function init() {
   bindPasswordScreen();
   bindHomeScreen();
   bindSheet();
+  bindDocModal();
   if (sessionStorage.getItem("unlocked") === "1") {
     state.passwordUnlocked = true;
     showScreen("screen-home");
