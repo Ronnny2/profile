@@ -91,11 +91,77 @@ function bindHomeScreen() {
   if (plus) {
     plus.addEventListener("click", (e) => {
       e.stopPropagation();
-      // sheet open handled in Task 8
+      openSheet();
     });
   }
 
   switchTab("id");
+}
+
+let sheetHideTimer = null;
+
+function openSheet() {
+  state.sheetOpen = true;
+  const sheet = document.getElementById("sheet");
+  const backdrop = document.getElementById("sheet-backdrop");
+  // Cancel a pending hide from a previous close — prevents the race
+  // where rapid close→open hides the now-open sheet 300 ms later.
+  if (sheetHideTimer) { clearTimeout(sheetHideTimer); sheetHideTimer = null; }
+  sheet.hidden = false;
+  backdrop.hidden = false;
+  // Force reflow so the transition fires
+  void sheet.offsetWidth;
+  sheet.classList.add("is-open");
+  backdrop.classList.add("is-open");
+}
+
+function closeSheet() {
+  state.sheetOpen = false;
+  const sheet = document.getElementById("sheet");
+  const backdrop = document.getElementById("sheet-backdrop");
+  sheet.classList.remove("is-open");
+  backdrop.classList.remove("is-open");
+  if (sheetHideTimer) clearTimeout(sheetHideTimer);
+  sheetHideTimer = setTimeout(() => {
+    // Guard against re-opening during the transition: only hide if still closed.
+    if (!state.sheetOpen) {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      sheet.style.transform = "";
+    }
+    sheetHideTimer = null;
+  }, 300);
+}
+
+function bindSheet() {
+  document.getElementById("sheet-backdrop").addEventListener("click", closeSheet);
+
+  const handle = document.getElementById("sheet-handle");
+  const sheet = document.getElementById("sheet");
+  let startY = null;
+  let currentDelta = 0;
+
+  handle.addEventListener("touchstart", (e) => {
+    startY = e.touches[0].clientY;
+    sheet.style.transition = "none";
+  }, { passive: true });
+
+  handle.addEventListener("touchmove", (e) => {
+    if (startY === null) return;
+    currentDelta = Math.max(0, e.touches[0].clientY - startY);
+    sheet.style.transform = `translateY(${currentDelta}px)`;
+  }, { passive: true });
+
+  handle.addEventListener("touchend", () => {
+    sheet.style.transition = "";
+    if (currentDelta > 80) {
+      closeSheet();
+    } else {
+      sheet.style.transform = "";
+    }
+    startY = null;
+    currentDelta = 0;
+  });
 }
 
 function startSplashFlow() {
@@ -106,6 +172,7 @@ function startSplashFlow() {
 function init() {
   bindPasswordScreen();
   bindHomeScreen();
+  bindSheet();
   if (sessionStorage.getItem("unlocked") === "1") {
     state.passwordUnlocked = true;
     showScreen("screen-home");
