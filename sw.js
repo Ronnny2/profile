@@ -1,4 +1,4 @@
-const CACHE = 'rezerv-plus-v1';
+const CACHE = 'rezerv-plus-v2';
 const ASSETS = [
   './',
   'index.html',
@@ -8,6 +8,7 @@ const ASSETS = [
   'assets/photo.jpg',
   'assets/qr.png',
   'assets/trident.svg',
+  'assets/trident-dark.svg',
   'assets/icon-192.png',
   'assets/icon-512.png',
   'assets/apple-touch-icon.png'
