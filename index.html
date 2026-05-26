@@ -18,6 +18,36 @@
         <p class="splash-title">Міністерство<br>оборони<br>України</p>
       </div>
     </section>
+    <section class="screen screen--password" id="screen-password">
+      <h1 class="pwd-title">Код для входу</h1>
+      <div class="pwd-dots" id="pwd-dots">
+        <span class="pwd-dot"></span>
+        <span class="pwd-dot"></span>
+        <span class="pwd-dot"></span>
+        <span class="pwd-dot"></span>
+      </div>
+      <div class="pwd-keypad">
+        <button class="pwd-key" data-digit="1">1</button>
+        <button class="pwd-key" data-digit="2">2</button>
+        <button class="pwd-key" data-digit="3">3</button>
+        <button class="pwd-key" data-digit="4">4</button>
+        <button class="pwd-key" data-digit="5">5</button>
+        <button class="pwd-key" data-digit="6">6</button>
+        <button class="pwd-key" data-digit="7">7</button>
+        <button class="pwd-key" data-digit="8">8</button>
+        <button class="pwd-key" data-digit="9">9</button>
+        <span class="pwd-key pwd-key--empty"></span>
+        <button class="pwd-key" data-digit="0">0</button>
+        <button class="pwd-key pwd-key--backspace" data-action="backspace" aria-label="Видалити">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 5H8L3 12L8 19H21A2 2 0 0 0 23 17V7A2 2 0 0 0 21 5Z"/>
+            <line x1="18" y1="9" x2="12" y2="15"/>
+            <line x1="12" y1="9" x2="18" y2="15"/>
+          </svg>
+        </button>
+      </div>
+      <p class="pwd-forgot">Не пам'ятаю код для входу</p>
+    </section>
   </div>
   <script src="app.js" defer></script>
 </body>

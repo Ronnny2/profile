@@ -7,7 +7,7 @@ const state = {
 };
 
 function init() {
-  document.getElementById("screen-splash").classList.add("is-active");
+  document.getElementById("screen-password").classList.add("is-active");
 }
 
 document.addEventListener("DOMContentLoaded", init);

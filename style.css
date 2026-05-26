@@ -68,3 +68,76 @@ html, body {
   line-height: 1.15;
   text-align: center;
 }
+
+.screen--password {
+  background: var(--bg-cream);
+  align-items: center;
+  padding: calc(80px + var(--safe-top)) 20px calc(40px + var(--safe-bottom));
+}
+
+.pwd-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.pwd-dots {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+.pwd-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-primary);
+  background: transparent;
+  transition: background 120ms ease;
+}
+
+.pwd-dot.is-filled {
+  background: var(--text-primary);
+}
+
+.pwd-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 75px);
+  gap: 24px;
+  margin-bottom: auto;
+}
+
+.pwd-key {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: var(--key-white);
+  border: none;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 80ms ease;
+}
+
+.pwd-key:active { opacity: 0.5; }
+
+.pwd-key--empty { background: transparent; cursor: default; }
+.pwd-key--backspace { background: transparent; }
+
+.pwd-forgot {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 24px;
+}
+
+@keyframes pwd-shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+.pwd-dots.is-shaking { animation: pwd-shake 400ms; }
