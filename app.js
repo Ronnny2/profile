@@ -95,6 +95,22 @@ function bindHomeScreen() {
     });
   }
 
+  const logout = document.getElementById("logout-button");
+  if (logout) {
+    logout.addEventListener("click", () => {
+      sessionStorage.removeItem("unlocked");
+      state.passwordUnlocked = false;
+      state.pinBuffer = "";
+      state.cardFlipped = false;
+      state.activeTab = "id";
+      const card = document.getElementById("id-card");
+      if (card) card.classList.remove("is-flipped");
+      updatePinDots();
+      switchTab("id");
+      showScreen("screen-password");
+    });
+  }
+
   switchTab("id");
 }
 
