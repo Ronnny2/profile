@@ -37,10 +37,16 @@ html, body {
 .screen {
   position: absolute;
   inset: 0;
-  display: none;
+  display: flex;
   flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
 }
-.screen.is-active { display: flex; }
+.screen.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
 
 .screen--splash {
   background: var(--bg-dark);
