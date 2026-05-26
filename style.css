@@ -314,7 +314,7 @@ html, body {
   left: 0;
   right: 0;
   display: flex;
-  background: var(--bg-cream);
+  background: #fbfdfc;
   border-top: 1px solid var(--divider);
   padding-bottom: var(--safe-bottom);
   height: calc(64px + var(--safe-bottom));
