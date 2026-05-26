@@ -78,7 +78,23 @@ function bindHomeScreen() {
   document.querySelectorAll(".nav-item").forEach(btn => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
-  // Ensure the "id" tab-content is active by default
+
+  const card = document.getElementById("id-card");
+  if (card) {
+    card.addEventListener("click", () => {
+      state.cardFlipped = !state.cardFlipped;
+      card.classList.toggle("is-flipped", state.cardFlipped);
+    });
+  }
+
+  const plus = document.getElementById("card-plus");
+  if (plus) {
+    plus.addEventListener("click", (e) => {
+      e.stopPropagation();
+      // sheet open handled in Task 8
+    });
+  }
+
   switchTab("id");
 }
 
