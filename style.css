@@ -247,11 +247,13 @@ html, body {
 }
 .card-meta { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; }
 .card-meta-label { font-size: 13px; color: var(--text-secondary); }
-.card-meta-value { font-size: 18px; color: var(--text-primary); font-weight: 500; }
+.card-meta-label--spaced { margin-top: 14px; }
+.card-meta-value { font-size: 18px; color: var(--text-primary); font-weight: 600; }
+.card-meta-value--multiline { font-size: 17px; line-height: 1.15; }
 
 .card-marquee {
   background: var(--marquee-brown);
-  height: 30px;
+  height: 34px;
   margin-top: auto;
   overflow: hidden;
   display: flex;
@@ -262,7 +264,9 @@ html, body {
   display: inline-flex;
   white-space: nowrap;
   color: var(--cream-on-dark);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
 }
 
 @keyframes marquee-scroll {
