@@ -87,22 +87,25 @@ const state = {
         └─ else   → shake indicators 400 ms, clear buffer
 
 [Home, tab = id]
-   ├─ tap card     → flip to QR side (cardFlipped = true)
+   ├─ tap card body → flip to QR side (cardFlipped = true)
+   │                  ("+" button calls e.stopPropagation() so it doesn't trigger flip)
    ├─ tap QR card  → flip back to photo (cardFlipped = false)
    ├─ tap orange + → open bottom sheet
    ├─ tap tab bar  → switch activeTab (id → services|vacancies|menu)
-   │                 (leaving id resets cardFlipped = false)
+   │                 (leaving id resets cardFlipped = false; returning to id shows photo side fresh)
    └─ tap "Сповіщення" pill → no-op (visual only)
 
 [bottom sheet]
    ├─ tap backdrop          → close
-   ├─ swipe handle ↓ > 80 px → close
+   ├─ drag handle ↓ > 80 px → close (drag-down ONLY on the handle, not the body —
+   │                                 keeps item taps unambiguous)
    └─ tap any item          → no-op (visual only)
 
 [Services tab]
    └─ all list items visual only, no navigation
 
 [Vacancies tab]
+   ├─ "?" help icon (top-right)      → no-op (visual only)
    ├─ checkbox "Більше не показувати" → no-op
    └─ "Почати" button                 → no-op
 
@@ -157,8 +160,11 @@ Exact values to be tuned pixel-by-pixel against screenshots during implementatio
 **2. Password screen** (`--bg-cream`)
 - "Код для входу" — 28 px / 600, centered, top ~25 % of viewport
 - 4 indicator dots: 12 px diameter, 16 px gap, empty = stroke, filled = solid dark
-- Keypad: 3 × 4 grid, 75 px circular keys, 32 px digits, key gap 24 px
-- Bottom row: empty / "0" / ⌫ icon (key 4 of row blank)
+- Keypad: 3 columns × 4 rows = 12 cells, 75 px circular keys, 32 px digits, key gap 24 px
+  - Row 1: `1` `2` `3`
+  - Row 2: `4` `5` `6`
+  - Row 3: `7` `8` `9`
+  - Row 4: ` ` (empty cell) `0` `⌫`
 - Bottom: "Не пам'ятаю код для входу" — 14 px / 400, centered, `--text-secondary`
 
 **3. Home — ID card (photo side)** (`--bg-cream`)
@@ -166,7 +172,9 @@ Exact values to be tuned pixel-by-pixel against screenshots during implementatio
 - Card: 90 % width, centered, 12 px radius, `--card-olive`, ~520 px height
   - Header row: "Резерв ID" (18 px / 700 black, left) + trident SVG 24 px (right)
   - Body: two columns, photo 140 × 140 px (radius 6 px) left, "Дата народження:" caption + "05.06.2001" right
-  - Brown stripe: full card width, 30 px tall, ~70 % down the card, marquee text inside
+  - Brown stripe: full card width, 30 px tall, ~70 % down the card, marquee text inside.
+    Marquee string (literal, looped): `Документ оновлено о 16:38 | 10.12.2025 •  ` (with trailing
+    spaces and bullet so adjacent loops are visually separated)
   - Footer: "Військовозобов'язаний" (12 px) + 3-line ФИО (22 px / 700 uppercase)
   - Orange "+" button: 48 px circle, absolute, bottom-right, overlapping card edge by 8 px
 - Bottom nav (shared): see below
@@ -318,6 +326,18 @@ self.addEventListener('fetch', e => {
 ```
 
 Cache-first strategy: app is fully static, content never changes. To ship updates, bump `CACHE` to `v2`, `v3`, etc., — old cache is cleared in `activate`.
+
+**SW registration** in `app.js`:
+
+```js
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' });
+  });
+}
+```
+
+**GitHub Pages subpath notes:** all paths in `index.html`, `manifest.json`, and the SW `ASSETS` array MUST be relative (`./` prefix or bare). When served from `https://<user>.github.io/rezerv-plus/`, the browser resolves bare paths like `'index.html'` relative to the SW location (also at `/rezerv-plus/`), so caching works correctly. Do not use absolute paths starting with `/` — they would point to the GitHub Pages root, not the project subpath, and break.
 
 ### Icons
 
