@@ -58,6 +58,30 @@ function bindPasswordScreen() {
   if (back) back.addEventListener("click", handlePinBackspace);
 }
 
+function switchTab(tabId) {
+  state.activeTab = tabId;
+  // Leaving id tab resets card flip
+  if (tabId !== "id") {
+    state.cardFlipped = false;
+    const card = document.getElementById("id-card");
+    if (card) card.classList.remove("is-flipped");
+  }
+  document.querySelectorAll(".tab-content").forEach(t => {
+    t.classList.toggle("is-active", t.dataset.tab === tabId);
+  });
+  document.querySelectorAll(".nav-item").forEach(n => {
+    n.classList.toggle("is-active", n.dataset.tab === tabId);
+  });
+}
+
+function bindHomeScreen() {
+  document.querySelectorAll(".nav-item").forEach(btn => {
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+  });
+  // Ensure the "id" tab-content is active by default
+  switchTab("id");
+}
+
 function startSplashFlow() {
   showScreen("screen-splash");
   setTimeout(() => showScreen("screen-password"), 1000);
@@ -65,9 +89,10 @@ function startSplashFlow() {
 
 function init() {
   bindPasswordScreen();
+  bindHomeScreen();
   if (sessionStorage.getItem("unlocked") === "1") {
     state.passwordUnlocked = true;
-    showScreen("screen-home"); // exists after Task 5; until then we'll see nothing
+    showScreen("screen-home");
   } else {
     startSplashFlow();
   }

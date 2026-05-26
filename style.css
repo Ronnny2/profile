@@ -147,3 +147,178 @@ html, body {
   40%, 60% { transform: translateX(6px); }
 }
 .pwd-dots.is-shaking { animation: pwd-shake 400ms; }
+
+.screen--home {
+  background: var(--bg-cream);
+  padding-top: calc(20px + var(--safe-top));
+  /* no bottom padding here — .tab-content handles its own bottom space */
+}
+
+.tab-content {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  padding: 0 20px;
+  /* Reserve space for bottom-nav so scrolled content doesn't slip under it */
+  padding-bottom: calc(80px + var(--safe-bottom) + 16px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tab-content.is-active { display: flex; }
+
+.home-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 32px;
+}
+
+.pill-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  color: var(--text-primary);
+  border: none;
+  border-radius: 24px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Card wrapper provides 3D context (used in Task 7) */
+.card-wrap {
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: 520px;
+  transform-style: preserve-3d;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  /* iOS Safari: force a compositor layer per face. Without this,
+     overflow:hidden + backface-visibility:hidden flickers on flip. */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.card-face--front {
+  background: var(--card-olive);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0 0;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 20px;
+}
+.card-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.card-trident { width: 22px; height: 28px; }
+
+.card-body {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  align-items: flex-start;
+}
+.card-photo {
+  width: 140px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.card-meta { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; }
+.card-meta-label { font-size: 13px; color: var(--text-secondary); }
+.card-meta-value { font-size: 18px; color: var(--text-primary); font-weight: 500; }
+
+.card-marquee {
+  background: var(--marquee-brown);
+  height: 30px;
+  margin-top: auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  /* keyframes animation added in Task 6 */
+}
+.card-marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  color: var(--cream-on-dark);
+  font-size: 13px;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px 20px;
+  gap: 6px;
+}
+.card-status { font-size: 12px; color: var(--text-secondary); }
+.card-name { font-size: 22px; font-weight: 700; line-height: 1.15; }
+
+.card-plus {
+  position: absolute;
+  right: -8px;
+  bottom: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  color: var(--text-primary);
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: var(--bg-cream);
+  border-top: 1px solid var(--divider);
+  padding-bottom: var(--safe-bottom);
+  height: calc(64px + var(--safe-bottom));
+}
+.nav-item {
+  flex: 1;
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 150ms ease;
+  padding-top: 8px;
+}
+.nav-item.is-active { color: var(--text-primary); }

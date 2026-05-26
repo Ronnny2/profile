@@ -48,6 +48,70 @@
       </div>
       <p class="pwd-forgot">Не пам'ятаю код для входу</p>
     </section>
+    <section class="screen screen--home" id="screen-home">
+      <div class="tab-content" data-tab="id">
+        <header class="home-header">
+          <button class="pill-button" aria-label="Сповіщення">
+            Сповіщення
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8C6 15 3 17 3 17H21S18 15 18 8Z"/>
+              <path d="M13.7 21A2 2 0 0 1 10.3 21"/>
+            </svg>
+          </button>
+        </header>
+
+        <div class="card-wrap">
+          <div class="card" id="id-card">
+            <div class="card-face card-face--front">
+              <div class="card-header">
+                <span class="card-title">Резерв ID</span>
+                <img src="assets/trident.svg" alt="" class="card-trident">
+              </div>
+              <div class="card-body">
+                <img src="assets/photo.jpg" alt="" class="card-photo">
+                <div class="card-meta">
+                  <span class="card-meta-label">Дата народження:</span>
+                  <span class="card-meta-value">05.06.2001</span>
+                </div>
+              </div>
+              <div class="card-marquee">
+                <div class="card-marquee-track">
+                  <span>Документ оновлено о 16:38 | 10.12.2025 &nbsp;•&nbsp; </span>
+                  <span>Документ оновлено о 16:38 | 10.12.2025 &nbsp;•&nbsp; </span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-status">Військовозобов'язаний</span>
+                <span class="card-name">ЮР'ЄВ<br>РОСТИСЛАВ<br>РУСЛАНОВИЧ</span>
+              </div>
+              <button class="card-plus" id="card-plus" aria-label="Дії з документом">+</button>
+            </div>
+            <!-- card-face--back will be added in Task 7 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- other tab-contents will be added in Tasks 9–11 -->
+
+      <nav class="bottom-nav">
+        <button class="nav-item is-active" data-tab="id">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="2"/><line x1="4" y1="11" x2="20" y2="11"/></svg>
+          <span>Резерв ID</span>
+        </button>
+        <button class="nav-item" data-tab="services">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>
+          <span>Сервіси</span>
+        </button>
+        <button class="nav-item" data-tab="vacancies">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3 L20 12 L12 21 L4 12 Z"/></svg>
+          <span>Вакансії</span>
+        </button>
+        <button class="nav-item" data-tab="menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+          <span>Меню</span>
+        </button>
+      </nav>
+    </section>
   </div>
   <script src="app.js" defer></script>
 </body>
