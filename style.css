@@ -150,7 +150,7 @@ html, body {
 
 .screen--home {
   background: var(--bg-cream);
-  padding-top: calc(20px + var(--safe-top));
+  padding-top: calc(8px + var(--safe-top));
   /* no bottom padding here — .tab-content handles its own bottom space */
 }
 
@@ -158,18 +158,23 @@ html, body {
   display: none;
   flex: 1;
   flex-direction: column;
-  padding: 0 20px;
+  padding: 0 12px;
   /* Reserve space for bottom-nav so scrolled content doesn't slip under it */
   padding-bottom: calc(80px + var(--safe-bottom) + 16px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
+/* Wider side padding for text-heavy tabs */
+.tab-content--list,
+.tab-content--vacancies,
+.tab-content--menu { padding-left: 20px; padding-right: 20px; }
 .tab-content.is-active { display: flex; }
 
 .home-header {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 32px;
+  margin-bottom: 18px;
+  padding: 0 8px;
 }
 
 .pill-button {
@@ -196,8 +201,8 @@ html, body {
 .card {
   position: relative;
   width: 100%;
-  max-width: 360px;
-  height: 480px;
+  max-width: 420px;
+  height: 530px;
   transform-style: preserve-3d;
   transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
