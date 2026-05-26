@@ -1,0 +1,46 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Icon generator</title></head>
+<body style="font-family:sans-serif;padding:20px">
+  <h2>Резерв+ icon generator</h2>
+  <p>Click each button to download the icon at the right size.</p>
+  <div id="buttons"></div>
+  <canvas id="cv" width="1024" height="1024" style="border:1px solid #ccc;max-width:300px;display:block;margin-top:16px"></canvas>
+  <script>
+    const SIZES = [
+      { name: 'icon-192.png',         size: 192, padding: 0.18 },
+      { name: 'icon-512.png',         size: 512, padding: 0.18 },
+      { name: 'icon-512-maskable.png', size: 512, padding: 0.30 },
+      { name: 'apple-touch-icon.png', size: 180, padding: 0.16 }
+    ];
+    const trident = new Image();
+    trident.src = '../assets/trident.svg';
+    trident.onload = () => {
+      drawIcon(document.getElementById('cv'), 1024, 0.18);
+      const wrap = document.getElementById('buttons');
+      SIZES.forEach(spec => {
+        const btn = document.createElement('button');
+        btn.textContent = 'Download ' + spec.name;
+        btn.style.margin = '4px';
+        btn.onclick = () => download(spec);
+        wrap.appendChild(btn);
+      });
+    };
+    function drawIcon(canvas, size, padding) {
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#1f1c17';
+      ctx.fillRect(0, 0, size, size);
+      const inner = size * (1 - padding * 2);
+      const offset = size * padding;
+      ctx.drawImage(trident, offset, offset, inner, inner);
+    }
+    function download(spec) {
+      const c = document.createElement('canvas');
+      drawIcon(c, spec.size, spec.padding);
+      const a = document.createElement('a');
+      a.download = spec.name;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+  </script>
+</body></html>
