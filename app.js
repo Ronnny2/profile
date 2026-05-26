@@ -7,7 +7,7 @@ const state = {
 };
 
 function init() {
-  console.log("Резерв+ initialized");
+  document.getElementById("screen-splash").classList.add("is-active");
 }
 
 document.addEventListener("DOMContentLoaded", init);

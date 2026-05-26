@@ -33,3 +33,38 @@ html, body {
   position: relative;
   overflow: hidden;
 }
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+}
+.screen.is-active { display: flex; }
+
+.screen--splash {
+  background: var(--bg-dark);
+  align-items: center;
+  justify-content: center;
+}
+
+.splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.splash-logo {
+  width: 56px;
+  height: 70px;
+}
+
+.splash-title {
+  color: var(--cream-on-dark);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+}
