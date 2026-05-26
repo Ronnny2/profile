@@ -265,6 +265,16 @@ html, body {
   font-size: 13px;
 }
 
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.card-marquee-track {
+  animation: marquee-scroll 20s linear infinite;
+  will-change: transform;
+}
+.card-marquee-track > span { padding-right: 0; }
+
 .card-footer {
   display: flex;
   flex-direction: column;
