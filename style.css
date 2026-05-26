@@ -1,11 +1,11 @@
 :root {
-  --bg-cream: #e3dfc7;
+  --bg-cream: #e1decb;
   --bg-dark: #1f1c17;
-  --cream-on-dark: #e3dfc7;
-  --card-olive: #9b9676;
+  --cream-on-dark: #e1decb;
+  --card-olive: #d5d3be;
   --card-white: #fafaf6;
-  --marquee-brown: #6e4a1a;
-  --accent-orange: #f59427;
+  --marquee-brown: #694e20;
+  --accent-orange: #ff8800;
   --text-primary: #1f1c17;
   --text-secondary: #5d574a;
   --key-white: #ffffff;
@@ -286,8 +286,8 @@ html, body {
 
 .card-plus {
   position: absolute;
-  right: -8px;
-  bottom: 32px;
+  right: 16px;
+  bottom: 56px;
   width: 48px;
   height: 48px;
   border-radius: 50%;
